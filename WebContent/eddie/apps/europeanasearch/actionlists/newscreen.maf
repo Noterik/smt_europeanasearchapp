@@ -1,0 +1,2 @@
+setUrlTrigger(/lou/europeanademo,/lou/domain/espace/html5application/europeanasearch)
+log(helloworld)
