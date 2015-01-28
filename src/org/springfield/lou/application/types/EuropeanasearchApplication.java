@@ -20,6 +20,9 @@
 * along with Europeanasearch app.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.springfield.lou.application.types;
+import java.util.Iterator;
+
+import org.springfield.fs.FSList;
 import org.springfield.fs.Fs;
 import org.springfield.fs.FsNode;
 import org.springfield.lou.application.*;
@@ -49,13 +52,49 @@ public class EuropeanasearchApplication extends Html5Application{
 			;
 		} else {
 			String result = albright.get(url,null,null);
-			s.setContent("defaultoutput", result);
+			
+			System.out.println("Albright result: ");
+			System.out.println(result);
+			// Eto tuk result ti sadarja <fsxml>-a i prosto triabva da go parsnesh
+			FSList nodes = new FSList().parseNodes(result);
+
+			//i ako ima thumbnail property vav Node-a, mojesh da sglobish nqkakvo html i da go pokajesh
+			// v defaultoutputa
+			
+			System.out.println("NDOE SIZE DIVCODE="+nodes.size());
+			// Loop through all the nodes
+			// Available properties are :
+			/*
+			 * title
+			 * url
+			 * creator
+			 * thumbnail
+			 * provider
+			 */
+			String body = "<div>";
+			for(Iterator<FsNode> iter = nodes.getNodes().iterator() ; iter.hasNext(); ) {
+				FsNode n = (FsNode)iter.next(); 
+				body += "<div class='item'>";
+				String thumbnail = n.getProperty("thumbnail");
+				String title = n.getProperty("title");
+				String provider = n.getProperty("provider");
+				if(thumbnail!=null) { // Check if there is a thumbnail
+					body += "<img src='" + thumbnail + "' />";
+				}
+				
+					body +=  "<h1>" + title + "</h1>";
+					
+					body +=  provider;
+				
+			   System.out.println("TITLE="+n.getProperty("title"));
+			   System.out.println("ID="+n.getId());
+			   body += "</div>";
+			}
+			body += "</div>";
+			s.setContent("defaultoutput", body);
 		}
-		
-		String viduri = "/domain/msp/user/luce/video/7";
-		FsNode video = Fs.getNode(viduri);
-		String src = null;
-		
+
     }
 
 }
+
