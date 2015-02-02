@@ -41,7 +41,6 @@ public class EuropeanasearchApplication extends Html5Application{
         loadContent(s, "titlepart");
         
         String url = s.getParameter("id");
-        s.setContent("defaultoutput", url);
         
         url = url + "/ep_images/";
         
@@ -49,49 +48,65 @@ public class EuropeanasearchApplication extends Html5Application{
 		if (albright==null) {
 			String result = "Service Albright not found";
 			s.setContent("defaultoutput", result);
-			;
 		} else {
 			String result = albright.get(url,null,null);
-			
-			System.out.println("Albright result: ");
-			System.out.println(result);
-			// Eto tuk result ti sadarja <fsxml>-a i prosto triabva da go parsnesh
-			FSList nodes = new FSList().parseNodes(result);
+			if(result==null) { //No video
+				s.setContent("defaultoutput", "<h2>No such video</h2>");
+			} else { // Build up related result
+				
+				String videoPath = s.getParameter("id");
+				//Build the video preview
+				String videobody ="<video id=\"video1\" controls preload=\"none\" data-setup=\"{}\">";
 
-			//i ako ima thumbnail property vav Node-a, mojesh da sglobish nqkakvo html i da go pokajesh
-			// v defaultoutputa
-			
-			System.out.println("NDOE SIZE DIVCODE="+nodes.size());
-			// Loop through all the nodes
-			// Available properties are :
-			/*
-			 * title
-			 * url
-			 * creator
-			 * thumbnail
-			 * provider
-			 */
-			String body = "<div>";
-			for(Iterator<FsNode> iter = nodes.getNodes().iterator() ; iter.hasNext(); ) {
-				FsNode n = (FsNode)iter.next(); 
-				body += "<div class='item'>";
-				String thumbnail = n.getProperty("thumbnail");
-				String title = n.getProperty("title");
-				String provider = n.getProperty("provider");
-				if(thumbnail!=null) { // Check if there is a thumbnail
-					body += "<img src='" + thumbnail + "' />";
-				}
-				
-					body +=  "<h1>" + title + "</h1>";
+				// if its a video we need its rawvideo node for where the file is.
+				FsNode rawvideonode = Fs.getNode(videoPath+"/rawvideo/1");
+				if (rawvideonode!=null) {
+					String mounts[] = rawvideonode.getProperty("mount").split(",");
+
+					// based on the type of mount (path) create the rest of the video tag.
+					String mount = mounts[0];
+					if (mount.indexOf("http://")==-1 && mount.indexOf("rtmp://")==-1) {
+						String ap = "http://"+mount+".noterik.com/progressive/"+mount+videoPath+"/rawvideo/1/raw.mp4";
+						videobody+="<source src=\""+ap+"\" type=\"video/mp4\" /></video>";
+					}
 					
-					body +=  provider;
+					s.setContent("player", videobody);
+				}
+				System.out.println("Albright result: ");
+				System.out.println(result);
+				// Eto tuk result ti sadarja <fsxml>-a i prosto triabva da go parsnesh
+				FSList nodes = new FSList().parseNodes(result);
+	
+				//i ako ima thumbnail property vav Node-a, mojesh da sglobish nqkakvo html i da go pokajesh
+				// v defaultoutputa
 				
-			   System.out.println("TITLE="+n.getProperty("title"));
-			   System.out.println("ID="+n.getId());
-			   body += "</div>";
+				System.out.println("NDOE SIZE DIVCODE="+nodes.size());
+				// Loop through all the nodes
+				// Available properties are :
+				/*
+				 * title
+				 * url
+				 * creator
+				 * thumbnail
+				 * provider
+				 */
+				String body = "<div>";
+				for(Iterator<FsNode> iter = nodes.getNodes().iterator() ; iter.hasNext(); ) {
+					FsNode n = (FsNode)iter.next(); 
+					body += "<div class='item'>";
+					String thumbnail = n.getProperty("thumbnail");
+					String objurl = n.getProperty("url");
+					
+					if(thumbnail!=null) { // Check if there is a thumbnail
+						body += "<a href='" + objurl + "' target=\"_blank\">";
+						body += "<img src='" + thumbnail + "' />";
+						body += "</a>";
+					}
+				   body += "</div>";
+				}
+				body += "</div>";
+				s.setContent("defaultoutput", body);
 			}
-			body += "</div>";
-			s.setContent("defaultoutput", body);
 		}
 
     }

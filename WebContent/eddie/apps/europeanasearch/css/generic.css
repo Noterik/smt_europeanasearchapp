@@ -86,3 +86,15 @@ table td, table th{
         border:1px solid #888888;
 	opacity: 0.9;
 }
+
+.item {
+	float: left;
+	margin-right: 5px;l'
+}
+
+.item img{
+	width: 150px;
+}
+
+#player { clear: both; background: #000000; padding: 10px 0; text-align: center; margin-bottom: 15px;}
+
