@@ -92,9 +92,15 @@ table td, table th{
 	margin-right: 5px;l'
 }
 
-.item img{
+.item imgv{
 	width: 150px;
 }
 
-#player { clear: both; background: #000000; padding: 10px 0; text-align: center; margin-bottom: 15px;}
+#player { 
+	clear: both;
+	background: #000000;
+	padding: 10px 0; 
+	text-align: center;
+	margin-bottom: 15px;
+}
 

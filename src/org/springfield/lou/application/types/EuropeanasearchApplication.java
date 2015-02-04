@@ -35,14 +35,13 @@ public class EuropeanasearchApplication extends Html5Application{
  	public EuropeanasearchApplication(String id) {
 		super(id); 
 	}
-	
-    public void onNewScreen(Screen s) {
-        loadStyleSheet(s, "generic");
-        loadContent(s, "titlepart");
-        
-        String url = s.getParameter("id");
-        
-        url = url + "/ep_images/";
+    
+    public void searchvideo(Screen s,String content) {
+    	
+		contentToProperties(s,content);
+		String url = (String)s.getProperty("videouri.value");
+		System.out.println("VIDEO ID: " + url);
+		url = url + "/ep_images/";
         
         ServiceInterface albright = ServiceManager.getService("albright");
 		if (albright==null) {
@@ -54,7 +53,7 @@ public class EuropeanasearchApplication extends Html5Application{
 				s.setContent("defaultoutput", "<h2>No such video</h2>");
 			} else { // Build up related result
 				
-				String videoPath = s.getParameter("id");
+				String videoPath = (String)s.getProperty("videouri.value");
 				//Build the video preview
 				String videobody ="<video id=\"video1\" controls preload=\"none\" data-setup=\"{}\">";
 
@@ -74,11 +73,10 @@ public class EuropeanasearchApplication extends Html5Application{
 				}
 				System.out.println("Albright result: ");
 				System.out.println(result);
-				// Eto tuk result ti sadarja <fsxml>-a i prosto triabva da go parsnesh
+				//  result contains the <fsxml> it must be parsed
 				FSList nodes = new FSList().parseNodes(result);
 	
-				//i ako ima thumbnail property vav Node-a, mojesh da sglobish nqkakvo html i da go pokajesh
-				// v defaultoutputa
+				//if there's a thumbnail property in the node you can make html and show it in defaultoutput
 				
 				System.out.println("NDOE SIZE DIVCODE="+nodes.size());
 				// Loop through all the nodes
@@ -108,8 +106,16 @@ public class EuropeanasearchApplication extends Html5Application{
 				s.setContent("defaultoutput", body);
 			}
 		}
-
-    }
+	}
+    
+    public void contentToProperties(Screen s,String content) {
+		String[] cmd=content.split(",");
+		for (int i=0;i<cmd.length;i++) {
+			String[] param = cmd[i].split("=");
+			s.setProperty(param[0],param[1]);
+		}
+		
+	}
 
 }
 
