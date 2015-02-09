@@ -3,3 +3,5 @@ loadStyleSheet(screen,generic) // load the generic stylesheet
 loadContent(screen,titlepart) // load the titlepart
 setContent(screen,videoinput,"<input id="videouri" name=\"videouri\"> ")
 setDiv(screen,videouri,"bind:change")
+setContent(screen,filterinput,"<select id="filtertype" name=\"filtertype\"><option value=\"ep_images\">EP_Image</option><option value=\"ep_videos\">EP_Video</option></select> ")
+setDiv(screen,filtertype,"bind:change")
