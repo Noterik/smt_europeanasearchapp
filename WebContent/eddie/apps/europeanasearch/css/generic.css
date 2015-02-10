@@ -1,5 +1,5 @@
 body {
-	background-color:#AAAAFF;
+	background-color:#5D8D89;
 	-webkit-background-size: 1024px 768px;
 	-moz-background-size: 1024px 768px;
 	-o-background-size: 1024px 768px;
@@ -104,3 +104,76 @@ table td, table th{
 	margin-bottom: 15px;
 }
 
+#titlepart {
+	font-family: "Trebuchet MS",Helvetica,sans-serif;
+	font-size: 36px;
+	text-align: center;
+	color: #3B5957;
+	background-color: #5D8D89;
+	text-shadow: 0px 1px 0px rgba(255,255,255,.3), 0px -1px 0px rgba(0,0,0,.7);
+}
+
+#titlepart>h2 {
+	margin-bottom: 35px;
+}
+
+.descriptionleft {
+	color: white;
+	float: left;
+}
+
+.descriptionleft>p {
+	
+}
+
+.descriptionright {
+	width: 400px;
+	color: white;
+	float: right;
+}
+
+#t1 {
+	font-family: "Proxima Nova",Helvetica,Arial,sans-serif;
+	color: gray;
+	font-size: 12px;
+}
+
+#videoinput {
+	text-align: center;
+}
+
+#videoinput>input {
+	width: 44%;
+	height: 38px;
+	-moz-box-flex: 1;
+	padding: 0px 8px;
+	font-size: 16px;
+}
+
+#filterinput {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+#filterinput>select {
+	width: 105px;
+	height: 32px;
+	font-size: 16px;
+}
+#searchkeys {
+	text-align: center;
+	margin-bottom: 25px;
+}
+
+#searchkeys>input {
+	width: auto;
+}
+
+#player {
+	overflow: hidden;
+}
+
+.t2 {
+	font-size: 26px;
+}

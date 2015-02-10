@@ -38,8 +38,7 @@ public class EuropeanasearchApplication extends Html5Application{
  	
  	public void searchfilter(Screen s,String content) {
  		System.out.println("searchFilter:" +content);
- 		contentToProperties(s,content);
- 		String filter = (String)s.getProperty("filtertype.value");
+ 		String filter = content;
  		s.setProperty("filter", filter);
  		String url = (String)s.getProperty("videoid");
  		url = url + "/"+filter+"/";
@@ -86,6 +85,7 @@ public class EuropeanasearchApplication extends Html5Application{
 				   body += "</div>";
 				}
 				body += "</div>";
+				
 				s.setContent("defaultoutput", body);
 			}
 		}
@@ -111,28 +111,65 @@ public class EuropeanasearchApplication extends Html5Application{
 			} else { // Build up related result
 				
 				String videoPath = (String)s.getProperty("videouri.value");
-				//Build the video preview
-				String videobody ="<video id=\"video1\" controls preload=\"none\" data-setup=\"{}\">";
-
+				FsNode videonode = Fs.getNode(videoPath);
+				String videobuild = "";
+				if(videonode!=null) {
+					String title = videonode.getProperty("TitleSet_TitleSetInEnglish_title");
+					String orgtitle = videonode.getProperty("TitleSet_TitleSetInOriginalLanguage_title");
+					String year = videonode.getProperty("SpatioTemporalInformation_TemporalInformation_productionYear");
+					String language = videonode.getProperty("originallanguage");
+					videobuild += "<div class=\"descriptionleft\">";
+					videobuild += "<p class=\"t2\">"+title+"</p>";
+					videobuild += "<p id=\"t1\">ORIGINAL TITLE</p>";
+					videobuild += "<p>"+orgtitle+"</p>";
+					videobuild += "<p id=\"t1\">PRODUCTION YEAR</p>";
+					videobuild += "<p>"+year+"</p>";
+					videobuild += "<p id=\"t1\">LANGUAGE</p>";
+					videobuild += "<p>"+language+"</p>";
+					videobuild += "</div>";	
+				}
+				
+				
+				 
+				
+				
+				
+				
 				// if it's a video we need it's rawvideo node for where the file is.
 				FsNode rawvideonode = Fs.getNode(videoPath+"/rawvideo/1");
 				if (rawvideonode!=null) {
+					//Build the video preview
+					videobuild += "<video id=\"video1\" controls preload=\"none\" data-setup=\"{}\">";
 					String mounts[] = rawvideonode.getProperty("mount").split(",");
 
 					// based on the type of mount (path) create the rest of the video tag.
 					String mount = mounts[0];
 					if (mount.indexOf("http://")==-1 && mount.indexOf("rtmp://")==-1) {
 						String ap = "http://"+mount+".noterik.com/progressive/"+mount+videoPath+"/rawvideo/1/raw.mp4";
-						videobody+="<source src=\""+ap+"\" type=\"video/mp4\" /></video>";
+						videobuild+="<source src=\""+ap+"\" type=\"video/mp4\" /></video>";
 					}
-					
-					s.setContent("player", videobody);
+
 				}
 				
-				FsNode videonode = Fs.getNode(videoPath);
+				if(videonode!=null) {
+					
+					String sum = videonode.getProperty("summary");
+					String series = videonode.getProperty("TitleSet_TitleSetInEnglish_seriesOrCollectionTitle");
+					
+					videobuild += "<div class=\"descriptionright\">";
+					videobuild += "<p id=\"t1\">SUMMARY</p>";
+					videobuild += "<p>"+sum+"</p>";
+					videobuild += "<p id=\"t1\">THIS ITEM IS PART OF THE SERIES/COLLECTION</p>";
+					videobuild += "<p>"+series+"</p>";
+					videobuild += "</div>";	
+				}
+				
+				s.setContent("player", videobuild);
+				loadContent(s, "searchfilter");
 				if(videonode!=null) {
 					String genreProprty = videonode.getProperty("genre");
 					String terms = videonode.getProperty("ThesaurusTerm");
+					
 					terms = terms.replaceAll(","," "); //Terms can be multiple separated by comma, so replace comma with space
 					String all = genreProprty + " " + terms;
 					
