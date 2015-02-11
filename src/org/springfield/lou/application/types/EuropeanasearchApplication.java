@@ -36,6 +36,82 @@ public class EuropeanasearchApplication extends Html5Application{
 		super(id); 
 	}
  	
+ 	public void decadefilter(Screen s,String content) {
+ 		System.out.println("decadeFilter:" +content);
+ 		String filter = (String)s.getProperty("filter");
+ 		if(filter==null) {
+ 			filter = "ep_images";
+ 		}
+ 		String url = (String)s.getProperty("videoid");
+ 		url = url + "/"+filter+"/";
+ 		
+ 		String decade = content;
+ 		
+ 		ServiceInterface albright = ServiceManager.getService("albright");
+		if (albright==null) {
+			String result = "Service Albright not found";
+			s.setContent("defaultoutput", result);
+		} else {
+			String videoPath = (String)s.getProperty("videoid");
+			FsNode videonode = Fs.getNode(videoPath);
+			if(videonode!=null) {
+				String genreProprty = videonode.getProperty("genre");
+				String terms = videonode.getProperty("ThesaurusTerm");
+				
+				
+				terms = terms.replaceAll(","," "); //Terms can be multiple separated by comma, so replace comma with space
+				String all = genreProprty + " " + terms + " " + decade;
+				
+				String body = "<input type=\"text\" value=\""+all+"\" />";
+				s.setContent("searchkeys", body);
+			}
+			
+			String fsxml = "<fsxml><properties><keywords>"+decade+"</keywords></properties></fsxml>";
+			System.out.println("Albright search: " + url);
+			System.out.println(fsxml);
+			String result = albright.get(url,fsxml,"text/xml");
+			if(result==null) { //No video
+				s.setContent("defaultoutput", "<h2>No such video</h2>");
+			} else { // Build up related result
+
+				System.out.println("Albright result: ");
+				System.out.println(result);
+				//  result contains the <fsxml> it must be parsed
+				FSList nodes = new FSList().parseNodes(result);
+	
+				//if there's a thumbnail property in the node you can make html and show it in defaultoutput
+				
+				System.out.println("NDOE SIZE DIVCODE="+nodes.size());
+				// Loop through all the nodes
+				// Available properties are :
+				/*
+				 * title
+				 * url
+				 * creator
+				 * thumbnail
+				 * provider
+				 */
+				String body = "<div>";
+				for(Iterator<FsNode> iter = nodes.getNodes().iterator() ; iter.hasNext(); ) {
+					FsNode n = (FsNode)iter.next(); 
+					body += "<div class='item'>";
+					String thumbnail = n.getProperty("thumbnail");
+					String objurl = n.getProperty("url");
+					
+					if(thumbnail!=null) { // Check if there is a thumbnail
+						body += "<a href='" + objurl + "' target=\"_blank\">";
+						body += "<img src='" + thumbnail + "' />";
+						body += "</a>";
+					}
+				   body += "</div>";
+				}
+				body += "</div>";
+				
+				s.setContent("defaultoutput", body);
+			}
+		}
+ 	}
+ 	
  	public void searchfilter(Screen s,String content) {
  		System.out.println("searchFilter:" +content);
  		String filter = content;
@@ -97,7 +173,6 @@ public class EuropeanasearchApplication extends Html5Application{
 		String url = (String)s.getProperty("videouri.value");
 		System.out.println("VIDEO ID: " + url);
 		s.setProperty("videoid", url);
-		
 		url = url + "/ep_images/";
         
         ServiceInterface albright = ServiceManager.getService("albright");
@@ -113,11 +188,14 @@ public class EuropeanasearchApplication extends Html5Application{
 				String videoPath = (String)s.getProperty("videouri.value");
 				FsNode videonode = Fs.getNode(videoPath);
 				String videobuild = "";
+				loadContent(s, "decadefilter");
+				loadContent(s, "searchfilter");
 				if(videonode!=null) {
 					String title = videonode.getProperty("TitleSet_TitleSetInEnglish_title");
 					String orgtitle = videonode.getProperty("TitleSet_TitleSetInOriginalLanguage_title");
 					String year = videonode.getProperty("SpatioTemporalInformation_TemporalInformation_productionYear");
 					String language = videonode.getProperty("originallanguage");
+					String decades = videonode.getProperty("decade");
 					videobuild += "<div class=\"descriptionleft\">";
 					videobuild += "<p class=\"t2\">"+title+"</p>";
 					videobuild += "<p id=\"t1\">ORIGINAL TITLE</p>";
@@ -128,7 +206,6 @@ public class EuropeanasearchApplication extends Html5Application{
 					videobuild += "<p>"+language+"</p>";
 					videobuild += "</div>";	
 				}
-				
 				
 				 
 				
@@ -165,10 +242,12 @@ public class EuropeanasearchApplication extends Html5Application{
 				}
 				
 				s.setContent("player", videobuild);
-				loadContent(s, "searchfilter");
+				
+				
 				if(videonode!=null) {
 					String genreProprty = videonode.getProperty("genre");
 					String terms = videonode.getProperty("ThesaurusTerm");
+					
 					
 					terms = terms.replaceAll(","," "); //Terms can be multiple separated by comma, so replace comma with space
 					String all = genreProprty + " " + terms;
@@ -197,21 +276,30 @@ public class EuropeanasearchApplication extends Html5Application{
 				 * thumbnail
 				 * provider
 				 */
-				String body = "<div>";
+				String body = "<div id=\"slider1\">"
+						+ "<a class=\"buttons prev\" href=\"#\">&#60;</a>"
+						+ "<div class=\"viewport\">"
+						+ "<ul class=\"overview\">";
+
 				for(Iterator<FsNode> iter = nodes.getNodes().iterator() ; iter.hasNext(); ) {
 					FsNode n = (FsNode)iter.next(); 
-					body += "<div class='item'>";
+					//body += "<div class='item'>";
 					String thumbnail = n.getProperty("thumbnail");
 					String objurl = n.getProperty("url");
 					
 					if(thumbnail!=null) { // Check if there is a thumbnail
-						body += "<a href='" + objurl + "' target=\"_blank\">";
-						body += "<img src='" + thumbnail + "' />";
-						body += "</a>";
+						//body += "<a href='" + objurl + "' target=\"_blank\">";
+						body += "<li><img src=\""+thumbnail+"\"></li>";
+
+						//body += "<img src='" + thumbnail + "' />";
+						//body += "</a>";
 					}
-				   body += "</div>";
+				   //body += "</div>";
 				}
-				body += "</div>";
+				body += "</ul>" 
+						+"</div>"
+						+ "<a class=\"buttons next\" href=\"#\">&#62;</a>" 
+						+ "</div>";
 				s.setContent("defaultoutput", body);
 			}
 		}

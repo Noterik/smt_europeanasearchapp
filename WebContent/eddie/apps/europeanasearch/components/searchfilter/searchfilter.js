@@ -4,17 +4,17 @@ var Searchfilter = function(options){
 	
 	$.extend(settings, options);
 
-function callSearch() {
-
-	$( "#filtertype" ).change(function() {
-		var value = document.getElementById('filtertype').value;
-		eddie.putLou('', 'searchfilter('+ value +')');
-		console.log(value);
-	});
-
-};
-
-callSearch();
+	function callSearch() {
+	
+		$( "#filtertype" ).change(function() {
+			var value = $(this).val();
+			eddie.putLou('', 'searchfilter('+ value +')');
+			console.log(value);
+		});
+	
+	};
+	
+	callSearch();
 	return self;
 }
 
