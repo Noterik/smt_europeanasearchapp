@@ -61,8 +61,9 @@ public class EuropeanasearchApplication extends Html5Application{
 				
 				terms = terms.replaceAll(","," "); //Terms can be multiple separated by comma, so replace comma with space
 				String all = genreProprty + " " + terms + " " + decade;
-				
+
 				String body = "<input type=\"text\" value=\""+all+"\" />";
+				body += "<div>decade Filter: " + decade + "</div>";
 				s.setContent("searchkeys", body);
 			}
 			
@@ -112,8 +113,8 @@ public class EuropeanasearchApplication extends Html5Application{
 		}
  	}
  	
- 	public void searchfilter(Screen s,String content) {
- 		System.out.println("searchFilter:" +content);
+ 	public void filetypefilter(Screen s,String content) {
+ 		System.out.println("filetypefilter:" +content);
  		String filter = content;
  		s.setProperty("filter", filter);
  		String url = (String)s.getProperty("videoid");
@@ -188,8 +189,9 @@ public class EuropeanasearchApplication extends Html5Application{
 				String videoPath = (String)s.getProperty("videouri.value");
 				FsNode videonode = Fs.getNode(videoPath);
 				String videobuild = "";
+				loadContent(s, "filetypefilter");
 				loadContent(s, "decadefilter");
-				loadContent(s, "searchfilter");
+				
 				if(videonode!=null) {
 					String title = videonode.getProperty("TitleSet_TitleSetInEnglish_title");
 					String orgtitle = videonode.getProperty("TitleSet_TitleSetInOriginalLanguage_title");
@@ -218,9 +220,11 @@ public class EuropeanasearchApplication extends Html5Application{
 					//Build the video preview
 					videobuild += "<video id=\"video1\" controls preload=\"none\" data-setup=\"{}\">";
 					String mounts[] = rawvideonode.getProperty("mount").split(",");
-
+					
 					// based on the type of mount (path) create the rest of the video tag.
 					String mount = mounts[0];
+					//Fixed the videoPath so that it get the original video from EuscreenXL domain
+					videoPath = videoPath.replace("espace", "euscreenxl").replace("luce", "eu_luce");
 					if (mount.indexOf("http://")==-1 && mount.indexOf("rtmp://")==-1) {
 						String ap = "http://"+mount+".noterik.com/progressive/"+mount+videoPath+"/rawvideo/1/raw.mp4";
 						videobuild+="<source src=\""+ap+"\" type=\"video/mp4\" /></video>";
@@ -244,18 +248,19 @@ public class EuropeanasearchApplication extends Html5Application{
 				s.setContent("player", videobuild);
 				
 				
-				if(videonode!=null) {
+				if(videonode!=null) { //Build the search terms html
 					String genreProprty = videonode.getProperty("genre");
 					String terms = videonode.getProperty("ThesaurusTerm");
 					
 					
-					terms = terms.replaceAll(","," "); //Terms can be multiple separated by comma, so replace comma with space
+					
 					String all = genreProprty + " " + terms;
 					
-					String body = "<input type=\"text\" value=\""+all+"\" />";
+					String body = "<div class=\"rul1\">Genre: " + genreProprty + "</div>";
+					body += "<div class=\"rul1\">Thesaurus Terms: " + terms + "</div>";
 					s.setContent("searchkeys", body);
 				}
-				
+
 				
 				
 				

@@ -101,7 +101,9 @@ table td, table th{
 	background: #000000;
 	padding: 10px 0; 
 	text-align: center;
-	margin-bottom: 15px;
+	margin-bottom: 30px;
+	width: 96%;
+	margin-left: 27px;
 }
 
 #titlepart {
@@ -173,7 +175,7 @@ table td, table th{
 }
 #searchkeys {
 	text-align: center;
-	margin-bottom: 25px;
+	margin-bottom: 70px;
 }
 
 #searchkeys>input {
@@ -193,7 +195,7 @@ table td, table th{
 
 .t2 {
 	font-size: 26px;
-	margin-bottom: 22px;
+	margin-bottom: 25px !important;
 }
 
 #filterdecade{
@@ -203,20 +205,8 @@ table td, table th{
 	font-size: 16px;
 }
 
-#decadefilter {
-	margin-bottom: 20px;
-	margin-left: 40%;
-	float: left;
-}
-
-
 #viddeo1 {
 	border: 2px solid black;
-}
-
-#searchfilter {
-	float: right;
-	margin-right: 40%;
 }
 
 #filtertype {
@@ -234,7 +224,7 @@ table td, table th{
     background-color: #006363;
 }
 
-#slider1 {margin: 12px 0px 0px 7px; overflow:hidden; position: relative; padding: 0 50px 10px;   }
+#slider1 {margin: 12px 0px 90px 7px; overflow:hidden; position: relative; padding: 0 50px 10px;   }
 #slider1 .viewport { height: 125px; overflow: hidden; position: relative; }
 #slider1 .buttons {
     border-radius: 35px;
@@ -283,4 +273,30 @@ ul li .image{
     width: 110px;
 }
 
+.titleD {
+	float: left;
+	margin-top: 8px;
+	margin-right: 9px;
+	font-family: "Trebuchet MS",Helvetica,sans-serif;
+	color: white;
+}
+
+.titleT {
+	float: left;
+	margin-top: 8px;
+	margin-right: 9px;
+	font-family: "Trebuchet MS",Helvetica,sans-serif;
+	color: white;
+}
+
+#filetypefilter {
+	float: left;
+	margin-bottom: 20px;
+	margin-left: 34%;
+	margin-right: 56px;
+}
+
+.rul1 {
+	float: left;
+}
 

@@ -1,1 +1,1 @@
-callServer(searchfilter, screen, content)
+callServer(filetypefilter, screen, content)

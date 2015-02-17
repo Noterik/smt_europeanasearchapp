@@ -1,4 +1,4 @@
-var Searchfilter = function(options){
+var Filetypefilter = function(options){
 	var self = {};
 	var settings = {}
 	
@@ -8,7 +8,7 @@ var Searchfilter = function(options){
 	
 		$( "#filtertype" ).change(function() {
 			var value = $(this).val();
-			eddie.putLou('', 'searchfilter('+ value +')');
+			eddie.putLou('', 'filetypefilter('+ value +')');
 			console.log(value);
 		});
 	
@@ -17,4 +17,3 @@ var Searchfilter = function(options){
 	callSearch();
 	return self;
 }
-
