@@ -37,9 +37,9 @@ public class EuropeanasearchApplication extends Html5Application{
 	}
  	
  	public void decadefilter(Screen s,String content) {
- 		System.out.println("decadeFilter:" +content);
+ 		System.out.println("decadeFilter:" +content);//decade filter
  		String filter = (String)s.getProperty("filter");
- 		if(filter==null) {
+ 		if(filter==null) {   
  			filter = "ep_images";
  		}
  		String url = (String)s.getProperty("videoid");
@@ -113,8 +113,8 @@ public class EuropeanasearchApplication extends Html5Application{
 		}
  	}
  	
- 	public void filetypefilter(Screen s,String content) {
- 		System.out.println("filetypefilter:" +content);
+ 	public void searchfilter(Screen s,String content) {
+ 		System.out.println("searchfilter:" +content);
  		String filter = content;
  		s.setProperty("filter", filter);
  		String url = (String)s.getProperty("videoid");
@@ -189,8 +189,8 @@ public class EuropeanasearchApplication extends Html5Application{
 				String videoPath = (String)s.getProperty("videouri.value");
 				FsNode videonode = Fs.getNode(videoPath);
 				String videobuild = "";
-				loadContent(s, "filetypefilter");
-				loadContent(s, "decadefilter");
+				loadContent(s, "searchfilter"); //loads the file type filter
+				loadContent(s, "decadefilter"); //loads the decade filter
 				
 				if(videonode!=null) {
 					String title = videonode.getProperty("TitleSet_TitleSetInEnglish_title");
@@ -234,8 +234,8 @@ public class EuropeanasearchApplication extends Html5Application{
 				
 				if(videonode!=null) {
 					
-					String sum = videonode.getProperty("summary");
-					String series = videonode.getProperty("TitleSet_TitleSetInEnglish_seriesOrCollectionTitle");
+					String sum = videonode.getProperty("summary"); // takes the summary from the xml
+					String series = videonode.getProperty("TitleSet_TitleSetInEnglish_seriesOrCollectionTitle");//takes the series/collection title from the xml
 					
 					videobuild += "<div class=\"descriptionright\">";
 					videobuild += "<p id=\"t1\">SUMMARY</p>";
@@ -252,8 +252,7 @@ public class EuropeanasearchApplication extends Html5Application{
 					String genreProprty = videonode.getProperty("genre");
 					String terms = videonode.getProperty("ThesaurusTerm");
 					
-					
-					
+						
 					String all = genreProprty + " " + terms;
 					
 					String body = "<div class=\"rul1\">Genre: " + genreProprty + "</div>";
